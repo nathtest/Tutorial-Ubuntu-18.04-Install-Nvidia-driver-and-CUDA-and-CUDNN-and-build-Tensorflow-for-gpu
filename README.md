@@ -109,13 +109,6 @@ Download tensorflow and choose what branch you want :
      cd ~/tensorflow
   
 ```
-
- Create symbolic link for bazel :
-
-```
-    sudo bash -c 'echo "/usr/local/cuda/lib64" > /etc/ld.so.conf.d/cuda.conf'
-    sudo ldconfig
-```
 Install gcc 4.8 (only version of gcc that can currently compile tensorflow) :
 
 ```
@@ -196,7 +189,7 @@ build --host_copt=-DGEMMLOWP_ALLOW_SLOW_SCALAR_FALLBACK
 Build tensorflow with bazel :
 
 ```
-bazel build --config=opt --config=cuda --action_env="/usr/local/cuda/lib64" //tensorflow/tools/pip_package:build_pip_package
+sudo bazel build --config=opt --config=cuda --action_env="/usr/local/cuda/lib64" //tensorflow/tools/pip_package:build_pip_package
     
 ```
 Create .whl for pip install :
