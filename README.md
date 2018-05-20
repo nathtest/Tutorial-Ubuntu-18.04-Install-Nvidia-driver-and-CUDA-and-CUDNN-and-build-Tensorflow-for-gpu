@@ -77,6 +77,7 @@ Now you must add some path to your  /.bashrc :
   ```
   Now reload your terminal config :
  ```
+     source ~/.bashrc
      sudo ldconfig
   ```
 Check if the path are correctly installed :
@@ -130,7 +131,31 @@ Create configuration file for tensorflow build :
   
 ```
 Say no to most query just specify the python version you want , yes to jemalloc and specify correct path to gcc-4.8.
+```
+Please specify the location of python. [Default is /usr/bin/python]: /usr/bin/python3
+Do you wish to build TensorFlow with jemalloc as malloc support? [Y/n]: Y
+Do you wish to build TensorFlow with Google Cloud Platform support? [Y/n]: N
+Do you wish to build TensorFlow with Hadoop File System support? [Y/n]: N
+Do you wish to build TensorFlow with Amazon S3 File System support? [Y/n]: N
+Do you wish to build TensorFlow with Apache Kafka Platform support? [y/N]: N
+Do you wish to build TensorFlow with XLA JIT support? [y/N]: N
+Do you wish to build TensorFlow with GDR support? [y/N]: N
+Do you wish to build TensorFlow with VERBS support? [y/N]: N
+Do you wish to build TensorFlow with OpenCL SYCL support? [y/N]: N
+Do you wish to build TensorFlow with CUDA support? [y/N]: Y
+Please specify the CUDA SDK version you want to use, e.g. 7.0. [Leave empty to default to CUDA 9.0]: 9.0
+Please specify the location where CUDA 9.1 toolkit is installed. Refer to README.md for more details. [Default is /usr/local/cuda]: /usr/local/cuda
+Please specify the cuDNN version you want to use. [Leave empty to default to cuDNN 7.0]: 7.1
+Please specify the location where cuDNN 7 library is installed. Refer to README.md for more details. [Default is /usr/local/cuda]: /usr/lib/x86_64-linux-gnu
+Do you wish to build TensorFlow with TensorRT support? [y/N]: N
+Please note that each additional compute capability significantly increases your build time and binary size. [Default is: 5.0] 3.0
+Do you want to use clang as CUDA compiler? [y/N]: N
+Please specify which gcc should be used by nvcc as the host compiler. [Default is /usr/bin/gcc]: /usr/bin/gcc-4.8
+Do you wish to build TensorFlow with MPI support? [y/N]: N
+Please specify optimization flags to use during compilation when bazel option "--config=opt" is specified [Default is -march=native]: -march=native
+Would you like to interactively configure ./WORKSPACE for Android builds? [y/N]:N
 
+```
 To help you can see my generated config file (.tf_configure.bazelrc ):
 
 ```
