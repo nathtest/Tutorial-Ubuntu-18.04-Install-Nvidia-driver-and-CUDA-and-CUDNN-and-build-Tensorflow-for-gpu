@@ -1,11 +1,12 @@
 # Ubuntu-18.04 Install Nvidia driver and CUDA and CUDNN and build Tensorflow for gpu
 Ubuntu 18.04 Tutorial : How to install Nvidia driver + CUDA + CUDNN +  build tensorflow for gpu step by step command line
 
+Thoses steps allowed me to build tensorflow for gpu with a comptute capabilities of 3.0 on a laptop with a GeForce 740m and Ubuntu 18.04.
+
 Install neccesary library :
 
 ```
    sudo apt-get install openjdk-8-jdk git python-dev python3-dev python-numpy python3-numpy python-six python3-six build-essential python-pip python3-pip python-virtualenv swig python-wheel python3-wheel libcurl3-dev libcupti-dev
-    
     
 ```
 # Install nvidia driver #
@@ -19,7 +20,7 @@ Add graphics drivers to your source list :
 ```
  Check what driver will be installed :
 ```
-        ubuntu-drivers devices
+    ubuntu-drivers devices
    ```
  Auto install latest driver (it will do everything blacklist drivers nouveau , create nvidia daemon  , ect ...) :
    ```
@@ -31,13 +32,13 @@ Add graphics drivers to your source list :
    ```
    If you boot without any kernel crash you're ok but you can check the correct install of the driver :
    ```
-     lsmod | grep nvidia
+   lsmod | grep nvidia
    
 ```
   or
 
 ```
-    nvidia-smi
+   nvidia-smi
 
 ```
 # Install cuda # 
@@ -87,12 +88,26 @@ Check if the path are correctly installed :
  ```
  # Build tensorflow with Bazel #
  
+ Install gcc 4.8 (only version of gcc that can currently compile tensorflow) :
+
+```
+    sudo apt-get install gcc-4.8 g++-4.8
+    sudo apt-get update
+   
+```
+ If gcc-4.8 package is not found you can try to add :
+
+```
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+    sudo apt-get update
+    sudo apt-get install gcc-4.8 g++-4.8
+  
+```
 Install bazel :
 
 ```
- echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
- curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
  sudo apt install curl
+ echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
  curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
  sudo apt-get update
  sudo apt-get install bazel
@@ -107,14 +122,6 @@ Download tensorflow and choose what branch you want :
      cd ~/tensorflow
      git checkout r1.8
      cd ~/tensorflow
-  
-```
-Install gcc 4.8 (only version of gcc that can currently compile tensorflow) :
-
-```
-    sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-    sudo apt-get update
-    sudo apt-get install gcc-4.8 g++-4.8
   
 ```
 Create configuration file for tensorflow build :
@@ -139,7 +146,7 @@ Do you wish to build TensorFlow with CUDA support? [y/N]: Y
 Please specify the CUDA SDK version you want to use, e.g. 7.0. [Leave empty to default to CUDA 9.0]: 9.0
 Please specify the location where CUDA 9.1 toolkit is installed. Refer to README.md for more details. [Default is /usr/local/cuda]: /usr/local/cuda
 Please specify the cuDNN version you want to use. [Leave empty to default to cuDNN 7.0]: 7.1
-Please specify the location where cuDNN 7 library is installed. Refer to README.md for more details. [Default is /usr/local/cuda]: /usr/lib/x86_64-linux-gnu
+Please specify the location where cuDNN 7 library is installed. Refer to README.md for more details. [Default is /usr/local/cuda]: /usr/local/cuda
 Do you wish to build TensorFlow with TensorRT support? [y/N]: N
 Please note that each additional compute capability significantly increases your build time and binary size. [Default is: 5.0] 3.0
 Do you want to use clang as CUDA compiler? [y/N]: N
@@ -148,44 +155,7 @@ Do you wish to build TensorFlow with MPI support? [y/N]: N
 Please specify optimization flags to use during compilation when bazel option "--config=opt" is specified [Default is -march=native]: -march=native
 Would you like to interactively configure ./WORKSPACE for Android builds? [y/N]:N
 
-```
-To help you can see my generated config file (.tf_configure.bazelrc ):
-
-```
-build --action_env PYTHON_BIN_PATH="/usr/bin/python3"
-build --action_env PYTHON_LIB_PATH="/usr/lib/python3/dist-packages"
-build --force_python=py3
-build --host_force_python=py3
-build --python_path="/usr/bin/python3"
-build --define with_jemalloc=true
-build:gcp --define with_gcp_support=true
-build:hdfs --define with_hdfs_support=true
-build:s3 --define with_s3_support=true
-build:kafka --define with_kafka_support=true
-build:xla --define with_xla_support=true
-build:gdr --define with_gdr_support=true
-build:verbs --define with_verbs_support=true
-build --action_env TF_NEED_OPENCL_SYCL="0"
-build --action_env TF_NEED_CUDA="1"
-build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda"
-build --action_env TF_CUDA_VERSION="9.0"
-build --action_env CUDNN_INSTALL_PATH="/usr/local/cuda-9.0"
-build --action_env TF_CUDNN_VERSION="7"
-build --action_env TF_NCCL_VERSION="1"
-build --action_env TF_CUDA_COMPUTE_CAPABILITIES="3.0"
-build --action_env LD_LIBRARY_PATH=":/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
-build --action_env TF_CUDA_CLANG="0"
-build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/gcc-4.8"
-build --config=cuda
-test --config=cuda
-build --define grpc_no_ares=true
-build:opt --copt=-march=native
-build:opt --host_copt=-march=native
-build:opt --define with_default_optimizations=true
-build --copt=-DGEMMLOWP_ALLOW_SLOW_SCALAR_FALLBACK
-build --host_copt=-DGEMMLOWP_ALLOW_SLOW_SCALAR_FALLBACK
-```
-
+````
 Build tensorflow with bazel :
 
 ```
@@ -195,12 +165,9 @@ sudo bazel build --config=opt --config=cuda --action_env="/usr/local/cuda/lib64"
 Create .whl for pip install :
 
 ```
-    bazel-bin/tensorflow/tools/pip_package/build_pip_package tensorflow_pkg
-    cd tensorflow_pkg/
-    sudo pip3 install tensorflow-<name_of_generated_file>.whl 
+   bazel-bin/tensorflow/tools/pip_package/build_pip_package tensorflow_pkg
+   cd tensorflow_pkg/
+   sudo pip3 install tensorflow-<name_of_generated_file>.whl 
   
 ```
-
-Thoses steps allowed me to build tensorflow for gpu with a comptute capabilities of 3.0 on a laptop with a GeForce 740m and on ubuntu 18.04.
-I hope it can help you as well.
-Let me know if you find some quicker way.
+Let me know if you find some quicker way to build tensorflow or if you found some mistakes.
