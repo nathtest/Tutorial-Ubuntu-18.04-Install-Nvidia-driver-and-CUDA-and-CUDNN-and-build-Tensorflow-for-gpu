@@ -9,6 +9,13 @@ Install neccesary library :
    sudo apt-get install openjdk-8-jdk git python-dev python3-dev python-numpy python3-numpy python-six python3-six build-essential python-pip python3-pip python-virtualenv swig python-wheel python3-wheel libcurl3-dev libcupti-dev
     
 ```
+If libcurl3-dev package is not found use:
+
+```
+   sudo apt-get install libcurl4-openssl-dev
+    
+```
+
 # Install nvidia driver #
 
 Add graphics drivers to your source list :
